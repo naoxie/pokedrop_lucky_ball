@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#10091e">
+  <meta name="description" content="20 Pokéballs, un seul numéro gagnant. Le tirage PokeDrop pour vos lives de cartes Pokémon.">
+  <title>PokeDrop Lucky Ball — À vous de jouer</title>
+  <link rel="icon" type="image/png" href="assets/img/pokeball/pokeball_close.png?v=transparent">
+  <link rel="preload" as="image" href="assets/img/logo/Logo néon PokeDrop Lucky Ball.png">
+  <link rel="preload" as="image" href="assets/img/pokeball/pokeball_close.png?v=transparent">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true">
+    <video id="background-video" autoplay muted loop playsinline preload="metadata" poster="assets/img/Background_mobile.png" tabindex="-1">
+      <source src="assets/video/background.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="ambient-particles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="topbar">
+        <div class="utility-buttons">
+          <button id="motion-toggle" class="icon-button" type="button" aria-label="Mettre les animations en pause" aria-pressed="false" title="Mettre les animations en pause">
+            <svg class="icon-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+            <svg class="icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m9 5 10 7-10 7Z"/></svg>
+          </button>
+          <button id="music-toggle" class="icon-button" type="button" aria-label="Désactiver la musique d’ambiance" aria-pressed="true" title="Désactiver la musique d’ambiance">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 4-6 5H2v6h3l6 5V4Z"/><g class="sound-waves"><path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/></g><path class="sound-off" d="m16 9 6 6m0-6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+      <h1 class="brand"><img src="assets/img/logo/Logo néon PokeDrop Lucky Ball.png" width="1983" height="793" alt="PokeDrop Lucky Ball" fetchpriority="high"></h1>
+    </header>
+
+    <main id="main-content">
+      <section class="arena" aria-label="Sélection des numéros">
+        <div class="grid-stage">
+          <div id="pokeball-grid" class="pokeball-grid" role="group" aria-label="Les 20 numéros du tirage"></div>
+          <div class="draw-overlay">
+            <button id="draw-button" class="draw-button" type="button" aria-label="Lancer le tirage des 20 numéros" hidden disabled><img src="assets/img/tirage.png" width="1774" height="887" alt="TIRAGE" decoding="async"></button>
+            <button id="reset-button" class="primary-button reset-button" type="button" hidden disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6"/></svg>NOUVELLE PARTIE</button>
+            <button id="resume-button" class="primary-button resume-button" type="button" hidden>RÉVÉLER LE RÉSULTAT <span aria-hidden="true">↗</span></button>
+          </div>
+        </div>
+      </section>
+
+      <p id="game-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+      <p id="app-notice" class="app-notice" role="status" hidden></p>
+      <noscript><p class="app-notice">Activez JavaScript pour sélectionner vos Pokéballs et lancer le tirage.</p></noscript>
+    </main>
+
+  </div>
+
+  <dialog id="victory-dialog" class="modal victory-modal" aria-labelledby="victory-title" aria-describedby="winner-number">
+    <div class="victory-particles" id="victory-particles" aria-hidden="true"></div>
+    <div class="modal-content"><p class="modal-brand">POKEDROP <span>LUCKY BALL</span></p><div class="victory-divider" aria-hidden="true"><span>✦</span></div><h2 id="victory-title">NUMÉRO GAGNANT</h2><p id="winner-number" class="winner-number"></p><div class="winner-art"><img id="winner-image" width="308" height="256" alt="" decoding="async"></div><p class="victory-message">La chance a choisi son camp.</p><button id="close-victory" class="primary-button" type="button" autofocus>FERMER <span aria-hidden="true">↗</span></button></div>
+  </dialog>
+
+  <dialog id="reset-dialog" class="modal reset-modal" aria-labelledby="reset-title" aria-describedby="reset-description">
+    <div class="modal-content"><p class="eyebrow">UN NOUVEAU DÉPART</p><h2 id="reset-title">On remet la chance en jeu ?</h2><p id="reset-description">Les sélections et le résultat de cette partie seront effacés.</p><div class="dialog-actions"><button id="cancel-reset" class="secondary-button" type="button" autofocus>ANNULER</button><button id="confirm-reset" class="primary-button" type="button">NOUVELLE PARTIE</button></div></div>
+  </dialog>
+
+  <audio id="background-audio" src="assets/audio/background.mp3" loop preload="none"></audio>
+  <audio id="victory-audio" src="assets/audio/victory.mp3" preload="auto"></audio>
+</body>
+</html>

@@ -1,0 +1,162 @@
+/* Fondations : une interface mobile, sans police ni dépendance distante. */
+:root {
+  color-scheme: dark;
+  --ink: #f7f1ff;
+  --muted: #b6a8cb;
+  --purple: #a96dff;
+  --pink: #ef62ed;
+  --gold: #ffd979;
+  --line: rgb(191 137 255 / 19%);
+  --panel: rgb(17 10 31 / 87%);
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #080510;
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 280px; min-height: 100vh; min-height: 100dvh; }
+button, input { font: inherit; }
+button { color: inherit; cursor: pointer; touch-action: manipulation; }
+button:disabled { cursor: default; }
+button, img { -webkit-user-select: none; user-select: none; }
+img { display: block; max-width: 100%; -webkit-user-drag: none; }
+button:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+h1, h2, p { margin: 0; }
+svg { display: block; width: 20px; height: 20px; flex: 0 0 auto; }
+
+/* Le fond image reste présent sous la vidéo, même si celle-ci échoue. */
+.backdrop { position: fixed; inset: 0; z-index: -2; background: #080510 url("../assets/img/Background_mobile.png") center / cover no-repeat; }
+.backdrop video { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.backdrop::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(6 3 14 / 58%), rgb(10 4 23 / 43%) 45%, rgb(5 3 12 / 87%)); transition: background-color .8s; }
+body.is-drawing .backdrop::after { background-color: rgb(5 2 12 / 48%); }
+.ambient-particles { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.ambient-particles i { position: absolute; bottom: -10px; width: 3px; height: 3px; border-radius: 50%; background: #e5b3ff; box-shadow: 0 0 14px 3px #af4fe9; animation: drift 17s linear infinite; }
+.ambient-particles i:nth-child(1) { left: 8%; animation-delay: -8s; }
+.ambient-particles i:nth-child(2) { left: 24%; animation-delay: -2s; animation-duration: 23s; }
+.ambient-particles i:nth-child(3) { left: 47%; animation-delay: -12s; }
+.ambient-particles i:nth-child(4) { left: 63%; animation-delay: -5s; animation-duration: 21s; }
+.ambient-particles i:nth-child(5) { left: 81%; animation-delay: -14s; }
+.ambient-particles i:nth-child(6) { left: 94%; animation-delay: -6s; animation-duration: 26s; }
+.app-shell { width: min(100% - 28px, 850px); margin-inline: auto; padding-top: max(12px, env(safe-area-inset-top)); padding-bottom: max(20px, env(safe-area-inset-bottom)); }
+
+/* En-tête et commandes toujours accessibles. */
+.topbar { display: flex; align-items: center; justify-content: flex-end; gap: 12px; min-height: 44px; }
+.utility-buttons { display: flex; gap: 7px; }
+.icon-button { display: grid; place-items: center; width: 44px; height: 44px; padding: 11px; border: 1px solid var(--line); background: rgb(19 10 34 / 72%); border-radius: 50%; color: #d2bee8; transition: border-color .2s, background .2s; }
+.icon-button:hover { background: #301940; border-color: #b97cea; }
+.sound-off, .icon-play, .music-muted .sound-waves { display: none; }
+.music-muted .sound-off, .motion-paused .icon-play { display: block; }
+.motion-paused .icon-pause { display: none; }
+.brand { width: min(76%, 350px); margin: -5px auto 0; }
+.brand img { width: 100%; height: auto; animation: logo-glow 5s ease-in-out infinite alternate; }
+
+/* L'arène encadre les assets sans rogner leurs halos. */
+.arena { position: relative; margin-top: 16px; padding: 12px; border: 1px solid var(--line); border-radius: 18px; background: linear-gradient(145deg, rgb(34 18 52 / 89%), var(--panel) 45%, rgb(26 11 43 / 90%)); box-shadow: 0 16px 60px rgb(0 0 0 / 30%), inset 0 1px 0 rgb(230 200 255 / 4%); }
+.arena::before { content: ""; position: absolute; top: -1px; left: 21%; right: 21%; height: 1px; background: linear-gradient(90deg, transparent, #d876f2, transparent); }
+.eyebrow { font-size: 8px; letter-spacing: 2px; font-weight: 700; color: #c393e8; margin-bottom: 8px; }
+.grid-stage { position: relative; isolation: isolate; }
+.pokeball-grid { position: relative; z-index: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; transition: filter .3s ease; }
+/* Seule la grille s'assombrit ; le bouton reste lumineux au premier plan. */
+.is-ready .pokeball-grid, .can-restart .pokeball-grid, .is-awaiting-reveal .pokeball-grid { filter: brightness(.32); }
+.draw-overlay { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; pointer-events: none; }
+.pokeball { position: relative; isolation: isolate; min-width: 0; min-height: 58px; padding: 5px 2px 3px; aspect-ratio: 1 / 1.12; border: 1px solid rgb(170 109 228 / 13%); border-radius: 10px; background: radial-gradient(ellipse at 50% 80%, rgb(126 39 168 / 14%), rgb(70 37 97 / 5%) 72%); transition: border-color .2s, background-color .2s, transform .2s, box-shadow .2s; }
+.pokeball::before { content: ""; position: absolute; z-index: -1; inset: 7%; border-radius: 50%; background: radial-gradient(ellipse, rgb(190 67 255 / 35%), transparent 70%); opacity: 0; transition: opacity .2s; }
+.ball-image { position: relative; width: 100%; height: calc(100% - 14px); object-fit: contain; object-position: center; }
+.ball-caption { height: 14px; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 8px; font-weight: 650; letter-spacing: 1px; color: #b99ed0; }
+.ball-check { display: none; width: 5px; height: 3px; border-bottom: 1px solid #edd2ff; border-left: 1px solid #edd2ff; transform: rotate(-45deg); }
+.pokeball.is-selected { border-color: rgb(196 111 249 / 42%); background-color: rgb(118 43 170 / 15%); }
+.pokeball.is-selected .ball-caption { color: #e5c6fa; }
+.pokeball.is-selected .ball-check { display: inline-block; }
+.pokeball.is-changing .ball-image { animation: ball-snap .32s ease-out; }
+.pokeball.is-changing::before { animation: selection-flash .4s ease-out; }
+/* Un contour doré instantané permet de suivre chaque passage, même à pleine vitesse. */
+.is-drawing .pokeball, .is-drawing .pokeball::before { transition: none; }
+.pokeball.is-active { border-color: #ffe5a1; background-color: rgb(214 155 42 / 24%); box-shadow: 0 0 0 2px var(--gold), 0 0 24px rgb(255 199 73 / 65%), inset 0 0 18px rgb(255 205 96 / 25%); transform: scale(1.035); z-index: 1; }
+.pokeball.is-active::before { opacity: 1; background: radial-gradient(ellipse, rgb(255 196 70 / 40%), transparent 70%); }
+.pokeball.is-active .ball-caption { color: #ffe5a1; }
+.pokeball.is-active .ball-check { border-color: #ffe5a1; }
+.pokeball.is-winner { border-color: var(--gold); background: radial-gradient(ellipse, rgb(220 158 41 / 23%), rgb(92 51 14 / 15%)); box-shadow: 0 0 24px rgb(255 196 75 / 24%); }
+.pokeball.is-winner .ball-caption { color: var(--gold); }
+.pokeball.is-winner .ball-check { border-color: var(--gold); }
+
+/* Les commandes de partie se superposent au centre de la grille. */
+.draw-button { display: block; width: min(76%, 330px); margin: 0; padding: 0; border: 0; background: transparent; border-radius: 20px; pointer-events: auto; transition: transform .2s, filter .2s; animation: button-arrive .4s ease-out; }
+.draw-button img { width: 100%; height: auto; }
+.draw-button:hover, .draw-button:focus-visible { transform: translateY(-3px); filter: drop-shadow(0 0 14px rgb(225 67 255 / 40%)); }
+.draw-button:active { transform: scale(.96); }
+.app-notice { margin: 14px auto 0; padding: 12px; max-width: 470px; color: #f6d8a2; font-size: 12px; line-height: 1.6; background: #2b1c2b; border: 1px solid #68513a; border-radius: 8px; }
+
+/* Dialogues natifs : focus contenu, touche Échap et arrière-plan inerte. */
+body:has(dialog[open]) { overflow: hidden; }
+.modal { color: var(--ink); padding: 0; width: min(420px, calc(100% - 32px)); max-height: calc(100dvh - 32px); margin: auto; overflow-x: hidden; border: 1px solid rgb(255 213 118 / 64%); border-radius: 22px; background: radial-gradient(ellipse at 50% 38%, #42301e, #19101f 55%, #100b19); box-shadow: 0 0 65px rgb(236 168 43 / 15%), inset 0 0 30px rgb(255 211 99 / 5%); }
+.modal::backdrop { background: rgb(5 2 12 / 83%); backdrop-filter: blur(7px); }
+.modal[open] { animation: modal-arrive .4s cubic-bezier(.2,.8,.2,1); }
+.modal-content { position: relative; z-index: 1; padding: 30px 24px 26px; text-align: center; }
+.modal-brand { color: #d7b5ef; font-size: 10px; font-weight: 700; letter-spacing: 2px; }
+.modal-brand span { color: var(--gold); }
+.victory-divider { display: flex; align-items: center; justify-content: center; gap: 13px; color: var(--gold); margin: 22px 0 18px; }
+.victory-divider::before, .victory-divider::after { content: ""; width: 50px; height: 1px; background: linear-gradient(90deg, transparent, #96733a); }
+.victory-divider::after { transform: rotate(180deg); }
+.victory-modal h2 { color: #e9c788; font-size: 12px; letter-spacing: 3.2px; font-weight: 600; }
+.winner-number { margin-top: 3px; color: #ffdf91; font-size: clamp(64px, 17vw, 92px); font-weight: 800; letter-spacing: -4px; line-height: 1.2; text-shadow: 0 0 35px rgb(255 191 70 / 30%); font-variant-numeric: tabular-nums; }
+.winner-art { position: relative; width: 86%; max-width: 275px; margin: 2px auto 5px; }
+.winner-art::before { content: ""; position: absolute; inset: 5%; z-index: -1; background: radial-gradient(ellipse, rgb(255 192 64 / 24%), transparent 70%); }
+.winner-art img { width: 100%; height: auto; max-height: 31dvh; object-fit: contain; filter: drop-shadow(0 0 18px rgb(255 184 53 / 18%)); }
+.victory-message { font-size: 12px; color: #c8b5b4; margin: 10px 0 24px; }
+.primary-button, .secondary-button { display: inline-flex; align-items: center; justify-content: center; gap: 20px; min-height: 46px; padding: 13px 25px; border-radius: 8px; border: 1px solid #f0c46a; color: #26180c; background: linear-gradient(110deg, #ffe7a1, #e9b65f); font-size: 10px; font-weight: 800; letter-spacing: 1px; }
+.primary-button:hover { filter: brightness(1.12); }
+.reset-button, .resume-button { width: min(82%, 300px); min-height: 60px; gap: 12px; padding: 18px 20px; border-radius: 12px; pointer-events: auto; font-size: 13px; letter-spacing: 1.5px; box-shadow: 0 0 28px rgb(239 181 81 / 25%), 0 8px 30px rgb(0 0 0 / 35%); animation: button-arrive .4s ease-out; }
+.reset-button svg { width: 18px; height: 18px; }
+.victory-modal .primary-button { width: 100%; }
+.victory-particles { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; pointer-events: none; }
+.victory-particles i { position: absolute; width: 3px; height: 3px; bottom: -10px; left: var(--left); background: #ffe8aa; border-radius: 50%; box-shadow: 0 0 8px #ffd174; animation: gold-drift var(--duration) var(--delay) linear infinite; }
+.reset-modal { border-color: #78568c; background: #1c1029; }
+.reset-modal .modal-content { padding: 30px 25px; }
+.reset-modal h2 { margin: 14px 0; font-size: 24px; letter-spacing: -.5px; }
+#reset-description { font-size: 13px; line-height: 1.7; color: var(--muted); }
+.dialog-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 25px; }
+.dialog-actions button { flex: 1 1 auto; padding-inline: 14px; }
+.secondary-button { border-color: #674678; background: #291b36; color: #e2cceb; }
+
+/* Desktop : cinq colonnes, avec la même hiérarchie que sur téléphone. */
+@media (min-width: 600px) {
+  .app-shell { width: min(100% - 64px, 850px); padding-top: 20px; }
+  .brand { width: 330px; margin-top: -30px; }
+  .arena { margin-top: 18px; padding: 16px 28px 15px; border-radius: 20px; }
+  .eyebrow { font-size: 9px; }
+  .pokeball-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+  .pokeball { aspect-ratio: 1.16; padding: 5px 7px 5px; border-radius: 11px; }
+  .ball-image { height: calc(100% - 16px); }
+  .ball-caption { height: 16px; font-size: 9px; }
+}
+@media (min-width: 1000px) {
+  .app-shell { width: 760px; }
+  .brand { width: 320px; }
+  .arena { padding-inline: 28px; }
+  .pokeball { aspect-ratio: 1.24; }
+}
+@media (max-width: 359px) {
+  .app-shell { width: calc(100% - 20px); }
+  .arena { padding-inline: 8px; }
+  .pokeball-grid { gap: 5px; }
+}
+@media (hover: hover) {
+  .pokeball:not(:disabled):hover { border-color: rgb(223 144 255 / 60%); background-color: rgb(140 65 176 / 14%); transform: translateY(-2px); }
+}
+@keyframes logo-glow { from { filter: drop-shadow(0 0 5px rgb(191 60 246 / 10%)); } to { filter: drop-shadow(0 0 13px rgb(208 70 250 / 30%)); } }
+@keyframes drift { 0% { transform: translate3d(0, 0, 0); opacity: 0; } 15%, 65% { opacity: .5; } 100% { transform: translate3d(30px, -100vh, 0); opacity: 0; } }
+@keyframes ball-snap { 0% { transform: scale(1); } 38% { transform: scale(.82) rotate(-5deg); opacity: .55; } 72% { transform: scale(1.05) rotate(2deg); } 100% { transform: scale(1); } }
+@keyframes selection-flash { 0% { opacity: .9; transform: scale(.7); } 100% { opacity: 0; transform: scale(1.15); } }
+@keyframes button-arrive { from { opacity: 0; transform: translateY(8px) scale(.95); } to { opacity: 1; transform: none; } }
+@keyframes modal-arrive { from { opacity: 0; transform: translateY(15px) scale(.94); } to { opacity: 1; transform: none; } }
+@keyframes gold-drift { 0% { transform: translateY(0) rotate(0); opacity: 0; } 15%, 70% { opacity: .8; } 100% { transform: translateY(-650px) rotate(180deg); opacity: 0; } }
+
+/* Le choix système ou le bouton de pause supprime les mouvements décoratifs. */
+.motion-paused *, .motion-paused *::before, .motion-paused *::after { animation: none !important; transition: none !important; }
+.motion-paused .ambient-particles, .motion-paused .victory-particles { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .ambient-particles, .victory-particles { display: none; }
+}
